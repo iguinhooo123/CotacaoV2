@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Arthur Vilane",
+      "email": "arthurvilane@gmail.com",
+      "password": "arthurvilane123",
+      "photo": "https://www.magnific.com/br/fotos-vetores-gratis/pessoa-frente",
+      "favorites": [
+        "BRA",
+        "CAN",
+        "JPN"
+      ]
+    },
+    {
+      "id": "2SF3ERlLcHQ",
+      "name": "Vinicius Lima",
+      "email": "vinicius@gmail.com",
+      "password": "teste1234",
+      "photo": "",
+      "favorites": []
+    }
+  ]
+}
