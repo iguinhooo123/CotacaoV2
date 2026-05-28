@@ -19,6 +19,15 @@
       "password": "teste1234",
       "photo": "",
       "favorites": []
+    },
+    {
+      "id": "XXLepWG4AsQ",
+      "name": "Igor ",
+      "email": "igor123@gmail.com",
+      "password": "senha1234",
+      "photo": "",
+      "favorites": []
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
