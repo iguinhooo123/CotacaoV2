@@ -25,7 +25,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="Main">
 
           <Stack.Screen
             name="Login"
@@ -373,6 +373,7 @@ function ScreenMain() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [clickTime, setClickTime] = useState(null);
+  const [search, setSearch] = useState("");
 
   const paises = {
     USD: "us",
@@ -415,8 +416,6 @@ function ScreenMain() {
           value: json[key].bid,
           flag: `https://flagcdn.com/w40/${paises[currency] || "un"
             }.png`,
-          flagbr:
-            "https://flagcdn.com/w40/br.png",
         };
       });
 
@@ -440,16 +439,24 @@ function ScreenMain() {
     <SafeAreaView style={styles.mainContainer}>
 
       <View style={styles.topHeader}>
+        <View style={styles.searchInput}>
+          <Ionicons
+            name="search"
+            size={20}
+            color="#000000"
+          />
 
-        <View style={styles.statusCard}>
-          <Text style={styles.statusTitle}>
-            Cotação Atual
-          </Text>
-
+          <TextInput
+            placeholder="Pesquisar país..."
+            style={styles.inputModern}
+            value={search}
+            onChangeText={setSearch}
+            autoCapitalize="none"
+          />
         </View>
       </View>
 
-      <View style={{ flex: 1, width: "100%", backgroundColor: "ffffff" }}>
+      <View style={styles.contentContainer}>
         {loading && data.length === 0 ? (
           <ActivityIndicator size="large" />
         ) : (
@@ -457,43 +464,34 @@ function ScreenMain() {
             data={data}
             keyExtractor={(item) => item.id}
             contentContainerStyle={{
-              paddingTop: 80,
-              paddingBottom: 100,
+              paddingTop: 25,
+              paddingBottom: 65,
             }}
             renderItem={({ item }) => (
-              <View style={styles.itemMoeda}>
-
+              <TouchableOpacity
+                style={styles.itemMoeda}
+                activeOpacity={0.8}
+                onPress={() =>
+                  Alert.alert(
+                    item.currency,
+                    `1 ${item.name} = R$ ${parseFloat(item.value).toFixed(2)}`
+                  )
+                }
+              >
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      width: 50,
-                      height: 45,
-                      marginRight: 10,
-                    }}
-                  >
-                    <View style={styles.flagMain}>
-                      <Image
-                        source={{ uri: item.flag }}
-                        style={styles.flagImage}
-                      />
-                    </View>
+                  <Image
+                    source={{ uri: item.flag }}
+                    style={styles.flagImage}
+                  />
 
-                    <View style={styles.flagSecondary}>
-                      <Image
-                        source={{ uri: item.flagbr }}
-                        style={styles.flagImage}
-                      />
-                    </View>
-                  </View>
-
-                  <View>
+                  <View style={{ marginLeft: 15 }}>
                     <Text style={styles.siglaMoeda}>
-                      {item.currency} / BRL
+                      {item.currency}
                     </Text>
 
                     <Text style={styles.nomeMoeda}>
@@ -502,31 +500,35 @@ function ScreenMain() {
                   </View>
                 </View>
 
-                <Text style={styles.valorMoeda}>
-                  R$ {parseFloat(item.value).toFixed(2)}
-                </Text>
-              </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={22}
+                  color="#999"
+                />
+              </TouchableOpacity>
             )}
           />
         )}
       </View>
 
-      <TouchableOpacity
-        style={styles.updateButton}
-        onPress={load}
-      >
-        <Ionicons
-          name="refresh"
-          size={20}
-          color="white"
-          style={{ marginRight: 10 }}
-        />
+      <View style={styles.footer}>
 
-        <Text style={styles.updateButtonText}>
-          Atualizar Cotações
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.footerItem}>
+          <Ionicons name="home-sharp" size={22} color="#2F5BEA" />
+          <Text style={styles.footerTextActive}>Início</Text>
+        </TouchableOpacity>
 
+        <TouchableOpacity style={styles.footerItem}>
+          <Ionicons name="heart-outline" size={22} color="#999" />
+          <Text style={styles.footerText}>Favoritos</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.footerItem}>
+          <Ionicons name="person-outline" size={22} color="#999" />
+          <Text style={styles.footerText}>Perfil</Text>
+        </TouchableOpacity>
+
+      </View>
     </SafeAreaView>
   );
 }
@@ -635,14 +637,19 @@ const styles = StyleSheet.create({
 
   mainContainer: {
     flex: 1,
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+
+    marginTop: -20,
+    paddingTop: 10,
   },
 
   topHeader: {
     backgroundColor: "#2F5BEA",
-    height: 130,
+    height: 150,
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 30,
   },
 
   statusCard: {
@@ -661,11 +668,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+
     padding: 20,
     marginHorizontal: 20,
     marginVertical: 8,
-    borderRadius: 15,
-    elevation: 2,
+
+    borderRadius: 20,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
+
+    elevation: 5,
   },
 
   siglaMoeda: {
@@ -705,27 +723,87 @@ const styles = StyleSheet.create({
   },
 
   flagMain: {
-    width: 34,
-    height: 34,
+    width: 80,
+    height: 80,
     borderRadius: 13,
     justifyContent: "center",
     alignItems: "center",
   },
 
-  flagSecondary: {
-    position: "absolute",
-    bottom: -2,
-    right: -2,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
+  flagImage: {
+    width: 60,
+    height: 40,
+    borderRadius: 5,
   },
 
-  flagImage: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+  searchInput: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#E5E5E5",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    height: 50,
+    width: "90%",
   },
+
+  contentContainer: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "#F2F2F2",
+
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+
+    marginTop: -25,
+
+    overflow: "hidden",
+  },
+
+  footer: {
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+
+  height: 75,
+  backgroundColor: "#fff",
+
+  flexDirection: "row",
+  justifyContent: "space-around",
+  alignItems: "center",
+
+  borderTopWidth: 1,
+  borderTopColor: "#EAEAEA",
+
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: -2,
+  },
+  shadowOpacity: 0.08,
+  shadowRadius: 5,
+
+  elevation: 10,
+},
+
+footerItem: {
+  alignItems: "center",
+  justifyContent: "center",
+},
+
+footerText: {
+  fontSize: 12,
+  color: "#999",
+  marginTop: 4,
+},
+
+footerTextActive: {
+  fontSize: 12,
+  color: "#2F5BEA",
+  marginTop: 4,
+  fontWeight: "bold",
+},
+
 });
